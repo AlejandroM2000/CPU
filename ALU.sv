@@ -1,9 +1,8 @@
-module ALU #(parameter W=8, OP=3) (
+module ALU #(parameter W=8, Ops=3) (
     input logic      [W-1:0]A,
                             B,
     input logic     [Ops-1:0] OP,
-    // input logic
-    output logic    [W-1:0] out
+    output logic    [W-1:0] out,
     output logic            Zero,
                             Sign     
 
