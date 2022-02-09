@@ -1,5 +1,5 @@
 // Description: Program Counter (Instruction Fetch) for Processor
-// Not tested yet
+// Tested using ProgCtr_tb
 
 module ProgCtr #(parameter L = 10) (
     input                   Reset,             // Reset flag
