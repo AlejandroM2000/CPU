@@ -14,6 +14,7 @@ logic             Zero,
 ALU uut(
     .A(A),
     .B(B),
+    .OP(OP),
     .out(out),
     .Zero(Zero),
     .Sign(Sign)
@@ -52,8 +53,8 @@ INPUTA = 1;
  begin
    case (op)
   0: expected = INPUTA + INPUTB;  // ADD 
-  1: expected = {0,INPUTA[W-1:W-INPUTB];  // LSH
-  2: expected = {INPUTA[W-INPUTB:0],0};  // RSH
+  1: expected = {0,INPUTA[W-1:W-INPUTB];  // RSH
+  2: expected = {INPUTA[W-INPUTB:0],0};  // LSH
   3: expected = INPUTA ^ INPUTB;  // XOR
    endcase
    #1; if(expected == OUT)
