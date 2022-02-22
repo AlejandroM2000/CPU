@@ -14,6 +14,7 @@ module ALU #(parameter W=8, Ops=3) (
             3'b001: out = A >> B; //shift right
             3'b010: out = A << B; //shift left
             3'b011: out = A ^ B;  //XOR
+		    default: out = 0;
         endcase
     end
             
