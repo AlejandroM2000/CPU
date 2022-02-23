@@ -26,6 +26,7 @@ with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
 			# Skip over blank lines, remove comments
 			line = line.strip()
 			line = line.split('//')[0].strip()
+			print(line + "\n")
 			if line == '':
 				continue
 			# Special-case this:
@@ -34,19 +35,20 @@ with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
 			else:
 				# get the instruction name 
 				op_name =  line.split()[0]
+				print(op_name + "\n")
 				machine_code = ''
 				if op_name == 'jump':
 					# split into op and jump location
 					op, lo = line.split()
 					op_bits = opcodes[op]
-					imm_bits = "{0:b}".format(int(lo))
+					imm_bits = "{0:06b}".format(int(lo))
 					machine_code = op_bits + imm_bits
 				elif op_name in ['shift_left', 'shift_right']:
 					# split into operation, reg souce and immediate to shift by
 					op, rs, imm = line.split()
 					op_bits = opcodes[op]
 					reg_bits = registers[rs]
-					imm_bits = "{0:b}".format(int(imm))
+					imm_bits = "{0:04b}".format(int(imm))
 					machine_code = op_bits + reg_bits + imm_bits
 					
 				elif op_name in ['load', 'store']:
@@ -60,11 +62,18 @@ with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
 				else:
 					# op + 3 args: split into op, rs1, rs2, rt
 					op = opcodes[line[:3]]
+					print(op + "\n")
 					rt, rs1, rs2 = line[3:].split()
+					print("rt: " + rt + "\n")
 					reg_t_bits = registers[rt]
+					print("rt bits: " + reg_t_bits + "\n")
+					print("rs1: " + rs1 + "\n")
 					reg_s1_bits = registers[rs1]
+					print("rs1 bits: " + reg_s1_bits + "\n")
+					print("rs2: " + rs2 + "\n")
 					reg_s2_bits = registers[rs2]
-					machine_code = opcodes[op] + reg_t_bits+ reg_s1_bits + reg_s2_bits
+					print("rs2 bits: " + reg_s2_bits + "\n")
+					machine_code = op + reg_t_bits+ reg_s1_bits + reg_s2_bits
 					
 			# Write the imem entry
 			imem.write(machine_code + '\n')
