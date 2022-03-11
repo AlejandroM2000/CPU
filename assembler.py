@@ -12,12 +12,17 @@ opcodes = {
 	}
 	
 registers = {
-	"r0" : "00",
-	'r1' : '01',
-	'r2' : '10',
-	'r3' : '11',
+	"r1" : "00",
+	'r2' : '01',
+	'r3' : '10',
+	'r4' : '11',
 }
 	
+
+ls_registers = {
+	"r0" : "0",
+	"r1" : "1"
+}
 TOTAL_IMEM_SIZE = 2**10
 
 with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
@@ -45,34 +50,29 @@ with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
 					machine_code = op_bits + imm_bits
 				elif op_name in ['shift_left', 'shift_right']:
 					# split into operation, reg souce and immediate to shift by
-					op, rs, imm = line.split()
+					op, rs, rd, imm = line.split()
 					op_bits = opcodes[op]
 					reg_bits = registers[rs]
 					imm_bits = "{0:04b}".format(int(imm))
 					machine_code = op_bits + reg_bits + imm_bits
 					
 				elif op_name in ['load', 'store']:
-					# op + 2 args: split into op, rs, rt
-					op, rs, rt = line.split()
+					# op + 2 args: split into op, rs, imm
+					op, rs, imm = line.split()
 					op_bits = opcodes[op]
-					reg_s_bits = registers[rs]
-					reg_t_bits = registers[rt]
-					imm_bits = "{0:b}".format(int(imm))
-					machine_code = op_bits + reg_s_bits + reg_t_bits + imm_bits
+					reg_s_bits = ls_registers[rs]
+					imm_bits = "{0:5b}".format(int(imm))
+					machine_code = op_bits + reg_s_bits + imm_bits
 				else:
 					# op + 3 args: split into op, rs1, rs2, rt
-					op = opcodes[line[:3]]
-					print(op + "\n")
-					rt, rs1, rs2 = line[3:].split()
-					print("rt: " + rt + "\n")
+					op, rt, rs1, rs2 = line.split()
+					reg_s2_bits = ''
+					if len(rs2) == 1:
+						reg_s2_bits = "{0:2b}".format(int(imm))
+					else:
+						reg_s2_bits = registers[rs2]
 					reg_t_bits = registers[rt]
-					print("rt bits: " + reg_t_bits + "\n")
-					print("rs1: " + rs1 + "\n")
 					reg_s1_bits = registers[rs1]
-					print("rs1 bits: " + reg_s1_bits + "\n")
-					print("rs2: " + rs2 + "\n")
-					reg_s2_bits = registers[rs2]
-					print("rs2 bits: " + reg_s2_bits + "\n")
 					machine_code = op + reg_t_bits+ reg_s1_bits + reg_s2_bits
 					
 			# Write the imem entry
