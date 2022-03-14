@@ -5,7 +5,7 @@ module ProgCtr #(parameter L = 10) (
     input                   Reset,             // Reset flag
                             Start,             // Signal to jump to next program
                             Clk,               // Clock that drives PC
-                            Jump,              // Signal to unconditionally jump
+                            //Jump,              // Signal to unconditionally jump
                             BOE,               // Signal to conditionally jump
                             IsEqual,           // Signal from ALU
     input [L-1:0]           Target,            // Address to jump to
@@ -18,10 +18,10 @@ logic last_start;
 always_ff @(posedge Clk) begin
     if (Reset)
         ProgCtr <= 0;                          // Only works for first program, need to add different value for others
-    else if (Jump)
-        ProgCtr <= Target;                     // Unconditional absolute jump
+    // else if (Jump)
+    //     ProgCtr <= Target;                     // Unconditional absolute jump
     else if (BOE && IsEqual)
-        ProgCtr <= ProgCtr + Target;           // Conditional relative branch (not sure if BOE is relative or absolute)
+        ProgCtr <= Target;           // Conditional relative branch (not sure if BOE is relative or absolute)
     else
         ProgCtr <= ProgCtr + 'b1;              // Else move to next instruction
 
@@ -40,7 +40,7 @@ always_ff @(posedge Clk) begin
 	end else if (Start == 1) begin
 		ProgCtr <= 0;
 	end else if ( (last_start == '1) && (Start == '0)) begin
-		ProgCtr <= 'd4;
+		ProgCtr <= 'd90;           // Set to 90 for now, test when second instruction is added
 	end
 end
 
