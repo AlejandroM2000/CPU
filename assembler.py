@@ -6,9 +6,9 @@ opcodes = {
 	'SHIFTLEFT' : '010',
 	'LOAD' : '011',
 	'XOR' : '100',
-	'STORE' : '101',
+	'STORE' : '111',
 	'BRANCH' : '110',
-	'MOV' : '111',
+	'MOV' : '101',
 	}
 	
 registers = {
