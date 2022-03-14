@@ -13,8 +13,6 @@ module Ctrl (
 assign MemWrEn = Instruction[8:6] == 3'b110;	
 assign StoreInst = Instruction[8:6] == 3'b101;  // calls out store specially
 
-//101 and 110 are the only instructions that don't write to a register
-//add : 000 , shiftrihgt: 001, Shiftleft: 010, load: 011, XOR: 100, MOV: 111
 assign RegWrEn = Instruction[8:7] != 2'b11;  
 assign LoadInst = Instruction[8:6] == 3'b011; //load instruction
 

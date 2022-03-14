@@ -21,7 +21,7 @@ always_ff @(posedge Clk) begin
     // else if (Jump)
     //     ProgCtr <= Target;                     // Unconditional absolute jump
     else if (BOE && IsEqual)
-        ProgCtr <= Target;           // Conditional relative branch (not sure if BOE is relative or absolute)
+        ProgCtr <= Target;           // Conditional absolute branch
     else
         ProgCtr <= ProgCtr + 'b1;              // Else move to next instruction
 
