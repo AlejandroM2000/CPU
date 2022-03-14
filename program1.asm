@@ -1,6 +1,6 @@
     MOV r2, 7
     SHIFTLEFT r2, 4
-    MOV r2, 10
+    MOV r2, 15
     BOE r1, 31, r2 //r1 = even number (0,2,4,6,8...)
     MOV r2, 0
     LOAD r3, r1, r2 
@@ -124,4 +124,4 @@
     STORE r3, r1, r2
     ADD r1, r1, 2
     BOE r1, r1, 0
-    
+    halt
