@@ -5,23 +5,23 @@ opcodes = {
 	'SHIFTRIGHT' : '001',
 	'SHIFTLEFT' : '010',
 	'LOAD' : '011',
-	'XOR' : '100',
+	'XORR' : '100',
 	'STORE' : '111',
-	'BRANCH' : '110',
+	'BOE' : '110',
 	'MOV' : '101',
 	}
 	
 registers = {
 	"r1" : "00",
-	'r2' : '01',
-	'r3' : '10',
-	'r4' : '11',
+	"r2" : "01",
+	"r3" : "10",
+	"r4" : "11",
 }
 	
 
 TOTAL_IMEM_SIZE = 2**10
 
-with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
+with open('program1.asm') as ifile, open('machine_code.txt', 'w') as imem:
 	for lineno, line in enumerate(ifile):
 		try:
 			# Skip over blank lines, remove comments
@@ -44,7 +44,7 @@ with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
 					op_bits = opcodes[op]
 					reg_bits = registers[reg_1]
 					imm_bits = "{0:04b}".format(int(imm))
-					machine_code = op_bits + reg_1 + imm_bits
+					machine_code = op_bits + reg_bits + imm_bits
 				elif op_name in ['SHIFTLEFT', 'SHIFTRIGHT']:
 					# split into operation, reg souce and immediate to shift by
 					op, rs, imm = line.split()
@@ -52,29 +52,32 @@ with open('basic.asm') as ifile, open('inst_mem.hex', 'w') as imem:
 					reg_bits = registers[rs]
 					imm_bits = "{0:04b}".format(int(imm))
 					machine_code = op_bits + reg_bits + imm_bits		
-				elif op_name in ['LOAD', 'STORE']:
+				elif op_name in ['LOAD', 'STORE', 'XORR']:
 					# op + 2 args: split into op, rs, imm
 					op, rs, rd, op_1 = line.split()
 					op_bits = opcodes[op]
 					reg_s_bits = registers[rs]
 					rd_bits = registers[rd]
+					print("op1_ 1 = " + op_1)
 					op_1_bits = ""
 					if len(op_1) > 1 :
 						op_1_bits = registers[op_1]
 					else: 
-						op_1_bits = "{0:2b}".format(int(imm))
-					machine_code = op_bits + reg_s_bits + rd_bits + imm_bits
+						op_1_bits = "{0:02b}".format(int(op_1))
+					print("op_1_bits = " + op_1_bits)
+					machine_code = op_bits + reg_s_bits + rd_bits + op_1_bits
 				else:
 					# op + 3 args: split into op, rs1, rs2, rt
 					op, rt, rs1, operand = line.split()
+					op_bits = opcodes[op]
 					operand_bits = ''
 					if len(operand) == 1:
-						operand_bits = "{0:2b}".format(int(imm))
+						operand_bits = "{0:02b}".format(int(operand))
 					else:
 						operand_bits = registers[operand]
 					reg_t_bits = registers[rt]
 					reg_s1_bits = registers[rs1]
-					machine_code = op + reg_t_bits+ reg_s1_bits + operand_bits
+					machine_code = op_bits + reg_t_bits+ reg_s1_bits + operand_bits
 					
 			# Write the imem entry
 			imem.write(machine_code + '\n')
