@@ -18,7 +18,7 @@ registers = {
 	'r4' : '11',
 }
 	
-
+	
 ls_registers = {
 	"r0" : "0",
 	"r1" : "1"
