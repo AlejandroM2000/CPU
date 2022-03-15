@@ -12,7 +12,7 @@ module ALU #(parameter W=8, Ops=3) (
             3'b000: out = A + B; // add 
             3'b001: out = A >> B; //shift right
             3'b010: out = A << B; //shift left
-            3'b011: out = ^A;  //XOR
+            3'b011: out[B] = ^A;
 		    default: out = 0;
         endcase
     end
