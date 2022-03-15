@@ -10,8 +10,8 @@ module TopLevel(		   // you will have the same 3 ports
 wire [ 9:0] PgmCtr,        // program counter
 			PCTarg;
 wire [ 8:0] Instruction;   // our 9-bit opcode
-wire [ 7:0] ReadA, ReadB;  // reg_file outputs
-wire [ 7:0] InA, InB, 	   // ALU operand inputs
+wire [ 7:0] ReadA, ReadB, ReadC;  // reg_file outputs
+wire [ 7:0] InA, InB, InC,	   // ALU operand inputs
             ALU_out;       // ALU result
 wire [ 7:0] RegWriteValue, // data in to reg file
             MemWriteValue, // data in to data_memory
@@ -23,6 +23,7 @@ wire        MemWrite,	   // data_memory write enable
             Jump,	       // to program counter: jump 
             BOE,           // **Added 
             isEqual,	   // to program counter: branch enable **changed
+			MovEn, 
             BranchEn,
             LoadInst,
             StoreInst;
@@ -33,8 +34,8 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
   ProgCtr PC1 (		       // this is the program counter module
 	.Reset        (Reset   ) ,  // reset to 0
 	.Start        (Start   ) ,  // SystemVerilog shorthand for .grape(grape) is just .grape 
-	.Clk          (Clk     ) ,  //    here, (Clk) is required in Verilog, optional in SystemVerilog
-	.Jump         (Jump    ) ,  // jump enable
+	.Clk          (Clk     ) ,  //  here, (Clk) is required in Verilog, optional in SystemVerilog
+	//.Jump         (Jump    ) ,  // jump enable
     .BOE          (BOE     ) ,
     .IsEqual      (isEqual ) ,
 	//.BranchRel    (BranchEn) ,  // branch enable
@@ -43,9 +44,9 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
 	.ProgCtr      (PgmCtr  )	   // program count = index to instruction memory
 	);					  
 
-LUT LUT1(.Addr         (TargSel ) ,
-         .Target       (PCTarg  )
-    );
+// LUT LUT1(.Addr         (TargSel ) ,
+//          .Target       (PCTarg  )
+//     );
 
 // instruction ROM -- holds the machine code pointed to by program counter
   InstROM #(.W(9)) IR1(
@@ -60,6 +61,7 @@ LUT LUT1(.Addr         (TargSel ) ,
 	.Jump         (Jump       ) ,  // to PC to handle jump/branch instructions
 	.BranchEn     (BranchEn   )	,  // to PC
 	.RegWrEn      (RegWrEn    )	,  // register file write enable
+	.MovEn		  (MovEn      ) ,
 	.MemWrEn      (MemWrite   ) ,  // data memory write enable
     .LoadInst     (LoadInst   ) ,  // selects memory vs ALU output as data input to reg_file
     .StoreInst    (StoreInst  ),
@@ -74,10 +76,12 @@ LUT LUT1(.Addr         (TargSel ) ,
 		.WriteEn   (RegWrEn)    , 
 		.RaddrA    (Instruction[3:2]),        //concatenate with 0 to give us 4 bits
 		.RaddrB    (Instruction[1:0]), 
+		.RaddrC	   (Instruction[5:4]),
 		.Waddr     (Instruction[5:4]), 	      // mux above
 		.DataIn    (RegWriteValue) , 
 		.DataOutA  (ReadA        ) , 
-		.DataOutB  (ReadB		 )
+		.DataOutB  (ReadB		 ) ,
+		.DataOutC  (ReadC        )
 	);
 /* one pointer, two adjacent read accesses: 
   (sample optional approach)
@@ -86,24 +90,24 @@ LUT LUT1(.Addr         (TargSel ) ,
 */
     assign InA = ReadA;						  // connect RF out to ALU in
 	assign InB = ReadB;	          			  // interject switch/mux if needed/desired
+	assign InC = ReadC;
 // controlled by Ctrl1 -- must be high for load from data_mem; otherwise usually low
 	assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
     ALU ALU1  (
 	  .A  (InA),
 	  .B  (InB),
-          .imm (Instruction[1:0]),
-	  //.SC_in   (1'b1),
+      .imm (Instruction[1:0]),
 	  .OP      (Instruction[8:6]),
 	  .out     (ALU_out),//regWriteValue),
 	  .Zero	   (Zero   ),                     // status flag; may have others, if desired
-      .Sign    (Sign   ),
+      .Sign    (Sign   )
 	  );
   
 	DataMem DM1(
-		.DataAddress  (ReadB)    , 
-		.offset       (Instruction[1:0]),
+		.DataAddress  (InA)    , 
+		.offset       (InB),
 		.WriteEn      (MemWrite), 
-		.DataIn       (ReadA), 
+		.DataIn       (InC), 
 		.DataOut      (MemReadValue)  , 
 		.Clk 		  (Clk)	     ,
 		.Reset		  (Reset)

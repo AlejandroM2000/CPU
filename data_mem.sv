@@ -1,16 +1,16 @@
 module data_mem #(parameter W=8, A=8)  (
   input                 Clk,
                         Reset,
-                        WriteEn,
-  input       [A-1:0]   DataAddress, // A-bit-wide pointer to 256-deep memory
-  input       [1:0]     offset,
-  input       [W-1:0]   DataIn,		 // W-bit-wide data path, also
-  output logic[W-1:0]   DataOut);
+                        WriteEn,      //High when instruction is a store
+  input       [A-1:0]   DataAddress, // A-bit-wide pointer to 256-deep memory 2nd operand
+  input       [A-1:0]   Offset,     // 3rd operand
+  input       [W-1:0]   DataIn,		 // W-bit-wide data path, also 1st oeprand when the instruction is store
+  output logic[W-1:0]   DataOut); // only non empty when it is a load instruction
 
   logic [W-1:0] Core[2**A];			 // 8x256 two-dimensional array -- the memory itself
 									 
   always_comb                        // reads are combinational
-    DataOut = Core[DataAddress + offset];
+    DataOut = Core[DataAddress + Offset];
 
   always_ff @ (posedge Clk)		 // writes are sequential
 /*( Reset response is needed only for initialization (see inital $readmemh above for another choice)
@@ -23,6 +23,6 @@ module data_mem #(parameter W=8, A=8)  (
 	      Core[i] <= i;
 	end
     else if(WriteEn) 
-      Core[DataAddress + offset] <= DataIn;
+      Core[DataAddress + Offset] <= DataIn;
 
 endmodule
