@@ -91,9 +91,12 @@
     ADD r4 r3 r4 //r4 = 0 0 b2 b4 b5 b7 b9 b11
     LOAD r3 r1 0 //loads the LSWi from memory
     SHIFTLEFT r3 7 // r3 = b1 0 0 0 0 0  0 0
-    SHIFTRIGHT r3 2// r3 = 0 b1 0 0 0 0 0 0
+    SHIFTRIGHT r3 1// r3 = 0 b1 0 0 0 0 0 0
     ADD r4 r3 r4 //r4 = 0 b1 b2 b4 b5 b7 b9 b11
-    XORR r4 r4 7 //r4 = p1 b1 b2 b4 b5 b7 b9 b11
+    MOV r3 0
+    SHIFTLEFT r3 4
+    MOV r3 7
+    XORR r4 r4 r3 //r4 = p1 b1 b2 b4 b5 b7 b9 b11
     SHIFTRIGHT r4 7
     SHIFTLEFT r4 1 // r4 = 0 0 0 0 0 0 p1 0
     MOV r2 1
