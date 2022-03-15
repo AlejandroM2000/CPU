@@ -72,9 +72,9 @@ LUT LUT1(.Addr         (TargSel ) ,
 		.Clk       (Clk)			  ,
 		.Reset     (Reset),
 		.WriteEn   (RegWrEn)    , 
-		.RaddrA    (Instruction[5:3]),        //concatenate with 0 to give us 4 bits
-		.RaddrB    (Instruction[2:0]), 
-		.Waddr     (Instruction[5:3]), 	      // mux above
+		.RaddrA    (Instruction[3:2]),        //concatenate with 0 to give us 4 bits
+		.RaddrB    (Instruction[1:0]), 
+		.Waddr     (Instruction[5:4]), 	      // mux above
 		.DataIn    (RegWriteValue) , 
 		.DataOutA  (ReadA        ) , 
 		.DataOutB  (ReadB		 )
