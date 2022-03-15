@@ -1,127 +1,116 @@
-    MOV r2, 7
-    SHIFTLEFT r2, 4
-    MOV r2, 15
-    BOE r1, 31, r2 //r1 = even number (0,2,4,6,8...)
-    MOV r2, 0
-    LOAD r3, r1, r2 
-    ADD r2, r1, 1  //r2 = odd number (1,3,5,7,9...)
-    LOAD r4, r2, 0   //(r4 = 01010101)
-    //I think this part should work above just fine becasuse here we are just grabbing the input from data_mem[0:29], in this case we don't need the offsets at this point because the registers can
-    //just LOAD in directly from the mmeory because the regsiters can hold up to 8 bits
-    MOV r2, 7 //this stores the mask of 0111 fro thenext instruction to work properly
-    AND r3, r3, r2 //masks the bits in r3 to get the necessary btis only
-    MOV r2, 5
-    SHIFTLEFT r3, r3, r2 // 5 = 101
-    SHIFTRIGHT r4, r4, 3
-    MOV r2, 1
-    SHIFTLEFT r2, 4 
-    MOV r2, 14
-    AND r4, r4, r2
-    ADD r3, r3, r4
-    XORR r3, 0, r3 //gives the p8 bit AND the MSWo in the same line 31 = 0001_1111
-    MOV r2, 1
-    SHIFTLEFT r2, 4
-    MOV r2, 15
-    STORE r3, r1, r2 //STOREs it in the corresponding location
-
-    SHIFTLEFT r2, 4 // bit mask = 1111_0000
-    AND r3, r3, r2 // this gives us bits b11 b10 b9 b8 in the top of the register
-    MOV r2, 0
-    LOAD r4, r1, r2 //loads back in the LSWi
-    MOV r2, 15
-    AND r4, r4, r2 //gives the b4 b3 b2 bits using the mask
-    SHIFTLEFT r4, 4
-    SHIFTRIGHT r3, 4
-    ADD r3, r3, r4 //b4 b3 b2 b11 b10 b9 b8 _
-    XORR r4, 3, r3 //b4 b3 b2 p4 x x x x  30 = 0001_1110
-    MOV r2, 1
-    SHIFTLEFT r2, 4
-    MOV r2, 14
-    STORE r4, r2 //STOREs b4 b3 b2 p4 x x x x into memory, this is half of the LSW
-
-    MOV r2, 1
-    SHIFTLEFT r2, 4
-    MOV r2, 15 //this is the mmeory address needed to load MSWo from memory
-    LOAD r3, r2, 0 //LOADs complete MSWo from memory
-    MOV r2, 12
-    SHIFTLEFT r2, 4
-    MOV r2, 12
-    AND r3, r3, r2 //gets only the b11 b10 b7 b4 bits needed for the parity
-    LOAD r4, r1, 0 //LOADs LSWi from memory
-    XORR r3, 0 ,r3 //intermediate xor for all the first 4 bits needed
-    MOV r2, 0
-    SHIFTLEFT r2, 4
-    MOV r2, 1
-    AND r3, r3, r2 //only keeping the intermediate bit with this mask
-    MOV r2, 13
-    AND r4, r4, r2
-    SHIFTLEFT r4, 4
-    ADD r3, r3, r4 //the intermediate xor bit AND the other needed bits are now in the same register
-    XORR r3, 0, r3 //now we have the p2 bit 
-    MOV r2, 1
-    AND r3, r3, r2//only keeping the xor bit
-    SHIFTLEFT r3, r3, 2 
-    MOV r2, 1
-    SHIFTLEFT r2, 4
-    MOV r2, 14 //trying to load LWSo from memory
-    LOAD r4, r1, r2 //loads the LSWo from memory with offset 30 and the index depending on the loop
-    MOV r2, 15
-    SHIFTLEFT r2, 4
-    MOV r2, 0 // bit mask of 1111_0000 is created to keep the top half of the register
-    AND r4, r4, r2
-    ADD r4, r3, r4 //b4 b3 b2 p4 _ p2 _ _ is now in a register
-    LOAD r3, r1, 0 //LOADs the LSWi into a register
-    MOV r2, 0
-    SHIFTLEFT r2, 4
-    MOV r2, 1
-    AND r3, r3, r2//bit mask to keep the bit bit
-    SHIFTLEFT r3, 4
-    ADD r4, r3, r4 //b4 b3 b2 p4 b1 p2 _ _ is now in a register
-    MOV r2, 1
-    SHIFTLEFT r2, 4
-    MOV r2, 14
-    STORE r4, r1, r2 //stores b4 b3 b2 p4 b1 p2 _ _ into memory
-
-    ADD r2, r2, 01
-    LOAD r3, r1, r2 //LOADs the MSWo from memory into reg 3
-    MOV r2, 10
-    SHIFTLEFT r2, 4
-    MOV r2, 10
-    AND r3, r3, r2 //bit mask to get the b11 b9 b7 AND b5 bits
-    XORR r3, 0, r3
-    MOV r2, 0
-    SHIFTLEFT r2, 4
-    MOV r2, 1
-    AND r3, r3, r2
-    MOV r2, 10
-    SHIFTLEFT r2, 4
-    MOV r2, 8
-    AND r4, r4, r2// bit mask to get   b4 b2 b1 bits
-    ADD r4, r3, r4
-    XORR r4, 0, r4
-    MOV r2, 0
-    SHIFTLEFT r2, 4
-    MOV r2, 1
-    AND r4, r4, r2
-    SHIFTLEFT r4, r4, 1
-    MOV r2, 1
-    SHIFTLEFT r2, 4
-    MOV r2, 14 //LOADs the incomplete LSW from memory
-    LOAD r3, r1, r1
-    ADD r3, r3, r4 //b4 b3 b2 p4 b1 p2 p1 _ is now in a register
-
-    MOV r2, 1
-    SHIFTLEFT r2, 4
-    MOV r2, 15
-    LOAD r4, r1, r2
-    XORR r4, 0, r4
-    MOV r2, 0
-    SHIFTLEFT r2, 4
-    MOV r2, 1
-    AND r4, r4, r2
-    ADD r4, r3, r4
-    XORR r3,0, r4 // b4 b3 b2 p4 b1 p2 p1 16 is now in a register
-    STORE r3, r1, r2
-    ADD r1, r1, 2
-    BOE r1, r1, 0
+    MOV r2 7
+    SHIFTLEFT r2 4
+    MOV r2 15
+    BOE r1 31 r2 //r1 = even number (02468...)
+    MOV r2 0
+    LOAD r3 r1 r2 
+    ADD r2 r1 1  //r2 = odd number (13579...)
+    LOAD r4 r2 0   //(r4 = 01010101)
+    //p8 parity bit
+    SHIFTLEFT r3 5
+    SHIFTRIGHT r4 3 
+    ADD r3 r4 r3 //b11:b5 are the top of the word
+    SHIFTRIGHT r3 r1 //to get rid of that extra bit at the bottom of the word
+    XORR r3 0 r3 //p8 parity bit and teh MSWo
+    MOV r2 1
+    SHIFTLEFT r2 4
+    MOV r2 15
+    STORE r3 r1 r2 //STOREs it in the corresponding location
+    //r3 = b11 b10 b9 b8 b7 b6 b5 p8
+    //r4 = 0 0 0 b8 b7 b6 b5 b4
+    SHIFTLEFT r3 4 //r3 = 0 0 0 0 b11 b10 b9 b8
+    LOAD r4 r2 0  //r4 = b8 b7 b6 b5 b4 b3 b2 b1
+    SHIFTLEFT r4 4 //r4 = b4 b3 b2 b1 0 0 0 0
+    SHIFTRIGHT r4 5 //r4 = 0 0 0 0 0 b4 b3 b2 
+    SHIFTLEFT r4 4 // r4 = 0 b4 b3 b2 0  0 0 0
+    ADD r3 r4 r3 // r3 = 0 b4 b3 b2 b11 b10 b9 b8
+    XORR r3 r3 3 // r3 = 0 b4 b3 b2 p4 b10 b9 b8
+    SHIFTLEFT r3 1 //r3 =  b4 b3 b2 p4 b10 b9 b8 0 
+    SHIFTRIGHT r3 4 //r3 = 0 0 0 0 b4 b3 b2 p4 
+    SHIFTLEFT r3 4 //r3 =  b4 b3 b2 p4 0 0 0 0
+    MOV r2 1
+    SHIFTLEFT r2 4
+    MOV r2 14 //r2 = 0001_1110
+    STORE r3 r1 r2 //stores half of the LSWo into memory
+    ADD r2 r1 1
+    LOAD r4 r2 0
+    SHIFTRIGHT r4 1
+    SHIFTLEFT r4 6 //r4 = b11 b10 0 0 0 0 0 0
+    LOAD r3 r1 0 // LSWi gets laoded form memory
+    SHIFTLEFT r3 1
+    SHIFTRIGHT r3 6
+    SHIFTLEFT r3 5 // r3 = 0 0 b7 b6 0 0 0 0 
+    ADD r4 r3 r4 // r4 = b11 b10 b7 b6 0 0 0 0
+    LOAD r3 r1 0 // LSWi gets laoded form memory
+     SHIFTLEFT r3 4
+    SHIFTRIGHT r3 6
+    SHIFTLEFT r3 2 // r3 = 0 0 0 0 b4 b3 0 0 
+    ADD r4 r3 r4 // r4 = b11 b10 b7 b6 b4 b3 0 0
+    LOAD r3 r1 0 // LSWi gets laoded form memory
+     SHIFTLEFT r3 7
+    SHIFTRIGHT r3 6 // r3 0 0 0 0 0 0 b1 0
+    ADD r4 r3 r4 // r4 = b11 b10 b7 b6 b4 b3 b1 0
+    XORR r4 r4 0 // r4 = b11 b10 b7 b6 b4 b3 b1 p2
+    SHIFTLEFT r4 6 // r4 = b1 p2 0 0 0 0 0 0
+    SHIFTRIGHT r4 4 // r4 = 0 0 0 0 b1 p2 0 0
+    MOV r2 1
+    SHIFTLEFT r2 4
+    MOV r2 14 // r2 = 30
+    LOAD r3 r1 r2 // r3 = b4 b3 b2 p4 0 0 0 0
+    ADD r3 r4 r3 // r3 = b4 b3 b2 p4 b1 p2 0 0 
+    STORE r3 r1 r2 //stores the LSWo into the corresponding part of memory
+    ADD r2 r1 1
+    LOAD r4 r2 0
+    SHIFTRIGHT r4 2 // r4 = 0 0 0 0 0 0 0 b11
+    LOAD r3 r2 0 
+    SHIFTLEFT r3 7
+    SHIFTRIGHT r4 6 
+    ADD r4 r3 r4 // r4 = 0 0 0 0 0 0 b9 b11
+    LOAD r3 r1 0 //loads the LSWi from memory
+    SHIFTRIGHT r3 7 // r3 = 0 0 0 0 0 0 0 b7
+    SHIFTLEFT r3 7 // r3 = b7 0 0 0 0 0  0 0
+    SHIFTRIGHT r3 5 // r3 = 0 0 0 0 0 b7 0 0
+    ADD r4 r3 r4 //r4 = 0 0 0 0 0 b7 b9 b11
+    LOAD r3 r1 0 //loads the LSWi from memory
+    SHIFTRIGHT r3 4 // r3 = 0 0 0 0 x x x b5
+    SHIFTLEFT r3 7 // r3 = b5 0 0 0 0 0  0 0
+    SHIFTRIGHT r3 4// r3 = 0 0 0 0 b5 0 0 0
+    ADD r4 r3 r4 //r4 = 0 0 0 0 b5 b7 b9 b11
+    LOAD r3 r1 0 //loads the LSWi from memory
+    SHIFTRIGHT r3 3 // r3 = 0 0 0 x x x x b4
+    SHIFTLEFT r3 7 // r3 = b4 0 0 0 0 0  0 0
+    SHIFTRIGHT r3 3// r3 = 0 0 0 b4 0 0 0 0
+    ADD r4 r3 r4 //r4 = 0 0 0 b4 b5 b7 b9 b11
+    LOAD r3 r1 0 //loads the LSWi from memory
+    SHIFTRIGHT r3 1 // r3 = 0 x x x x x x b2
+    SHIFTLEFT r3 7 // r3 = b2 0 0 0 0 0  0 0
+    SHIFTRIGHT r3 2// r3 = 0 0 b2 0 0 0 0 0
+    ADD r4 r3 r4 //r4 = 0 0 b2 b4 b5 b7 b9 b11
+    LOAD r3 r1 0 //loads the LSWi from memory
+    SHIFTLEFT r3 7 // r3 = b1 0 0 0 0 0  0 0
+    SHIFTRIGHT r3 2// r3 = 0 b1 0 0 0 0 0 0
+    ADD r4 r3 r4 //r4 = 0 b1 b2 b4 b5 b7 b9 b11
+    XORR r4 r4 7 //r4 = p1 b1 b2 b4 b5 b7 b9 b11
+    SHIFTRIGHT r4 7
+    SHIFTLEFT r4 1 // r4 = 0 0 0 0 0 0 p1 0
+    MOV r2 1
+    SHIFTLEFT 4
+    MOV r2 14
+    LOAD r3 r1 r2 //Loads the LSWo form memory
+    ADD r4 r4 r3 //r4 = b4 b3 b2 p4 b1 p2 p1 0
+    STORE r4 r1 r2 //stores the LSWo into memory
+    XORR r4 r4 0 //r4 = b4 b3 b2 p4 b1 p2 p1 parity_bit_16_intermediate
+    LEFTSHIFT r4 7 //r4 = parity_bit_16_intermediate 0 0 0 0 0 0 0 
+    MOV r2 1
+    LEFTSHIFT r2 4
+    MOV r2 15
+    LOAD r3 r1 r2
+    XORR r4 1 r3 
+    XORR r4 0 r4 // r4 = 0 0 0 0 0 0 0 p16
+    MOV r2 1
+    SHIFTLEFT 4
+    MOV r2 14
+    LOAD r3 r1 r2 //Loads the LSWo form memory
+    ADD r3 r4 r3 //r3 = b4 b3 b2 p4 b2 p2 b1 p16
+    STORE r3 r1 r2 //stores the complete LSWo into memory
     halt
