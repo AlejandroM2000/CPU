@@ -1,7 +1,10 @@
     MOV r2 7
     SHIFTLEFT r2 4
     MOV r2 15
-    BOE r1 31 r2 //r1 = even number (02468...)
+    MOV r3 1
+    SHIFTLEFT r3 4
+    MOV r3 15
+    BOE r1 r3 r2 //r1 = even number (02468...)
     MOV r2 0
     LOAD r3 r1 r2 
     ADD r2 r1 1  //r2 = odd number (13579...)
@@ -10,8 +13,8 @@
     SHIFTLEFT r3 5
     SHIFTRIGHT r4 3 
     ADD r3 r4 r3 //b11:b5 are the top of the word
-    SHIFTRIGHT r3 r1 //to get rid of that extra bit at the bottom of the word
-    XORR r3 0 r3 //p8 parity bit and teh MSWo
+    SHIFTRIGHT r3 1 //to get rid of that extra bit at the bottom of the word
+    XORR r3 r3 0  //p8 parity bit and teh MSWo
     MOV r2 1
     SHIFTLEFT r2 4
     MOV r2 15
@@ -94,21 +97,21 @@
     SHIFTRIGHT r4 7
     SHIFTLEFT r4 1 // r4 = 0 0 0 0 0 0 p1 0
     MOV r2 1
-    SHIFTLEFT 4
+    SHIFTLEFT r2 4
     MOV r2 14
     LOAD r3 r1 r2 //Loads the LSWo form memory
     ADD r4 r4 r3 //r4 = b4 b3 b2 p4 b1 p2 p1 0
     STORE r4 r1 r2 //stores the LSWo into memory
     XORR r4 r4 0 //r4 = b4 b3 b2 p4 b1 p2 p1 parity_bit_16_intermediate
-    LEFTSHIFT r4 7 //r4 = parity_bit_16_intermediate 0 0 0 0 0 0 0 
+    SHIFTLEFT r4 7 //r4 = parity_bit_16_intermediate 0 0 0 0 0 0 0 
     MOV r2 1
-    LEFTSHIFT r2 4
+    SHIFTLEFT r2 4
     MOV r2 15
     LOAD r3 r1 r2
-    XORR r4 1 r3 
-    XORR r4 0 r4 // r4 = 0 0 0 0 0 0 0 p16
+    XORR r4 r3 1 
+    XORR r4 r4 0 // r4 = 0 0 0 0 0 0 0 p16
     MOV r2 1
-    SHIFTLEFT 4
+    SHIFTLEFT r2 4
     MOV r2 14
     LOAD r3 r1 r2 //Loads the LSWo form memory
     ADD r3 r4 r3 //r3 = b4 b3 b2 p4 b2 p2 b1 p16
