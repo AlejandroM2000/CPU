@@ -1,4 +1,4 @@
-module RegFile #(parameter W=8, A=4)(		 // W = data path width (leave at 8); A = address pointer width
+module RegFile #(parameter W=8, A=2)(		 // W = data path width (leave at 8); A = address pointer width
   input                Clk,
                        Reset,
                        WriteEn,
