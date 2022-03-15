@@ -10,13 +10,12 @@ module Ctrl (
   output logic [1:0] TargSel       // Select signal for LUT
   );
 
-assign MemWrEn = Instruction[8:6] == 3'b110;	
-assign StoreInst = Instruction[8:6] == 3'b101;  // calls out store specially
+assign MemWrEn = Instruction[8:6] == 3'b111;	
+assign StoreInst = Instruction[8:6] == 3'b111;  // calls out store specially
 
 assign RegWrEn = Instruction[8:7] != 2'b11;  
 assign LoadInst = Instruction[8:6] == 3'b011; //load instruction
 
-assign Jump = Instruction[8:6] == 3'b111;
 
 assign BranchEn = &Instruction[8:6];
 
