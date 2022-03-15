@@ -10,7 +10,7 @@ module TopLevel(		   // you will have the same 3 ports
 wire [ 9:0] PgmCtr,        // program counter
 			PCTarg;
 wire [ 8:0] Instruction;   // our 9-bit opcode
-wire [ 7:0] ReadA, ReadB, ReadC;  // reg_file outputs
+wire [ 7:0] ReadA,  ReadB,//  ReadC;  // reg_file outputs
 wire [ 7:0] InA, InB, InC,	   // ALU operand inputs
             ALU_out;       // ALU result
 wire [ 7:0] RegWriteValue, // data in to reg file
@@ -64,16 +64,17 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
 	.MovEn		  (MovEn      ) ,
 	.MemWrEn      (MemWrite   ) ,  // data memory write enable
     .LoadInst     (LoadInst   ) ,  // selects memory vs ALU output as data input to reg_file
-    .StoreInst    (StoreInst  ),
+    .StoreInst    (StoreInst  ) ,
     .TargSel      (TargSel    ) ,  // index into lookup table 
     .Ack          (Ack        )	   // "done" flag
   );
 
 // reg file
-	RegFile #(.W(8),.A(3)) RF1 (			  // A(3) makes this 2**3=8 elements deep
+	RegFile #(.W(8),.A(2)) RF1 (			  // A(3) makes this 2**3=8 elements deep
 		.Clk       (Clk)			  ,
 		.Reset     (Reset),
 		.WriteEn   (RegWrEn)    , 
+		.MovEn	   (MovEn),
 		.RaddrA    (Instruction[3:2]),        //concatenate with 0 to give us 4 bits
 		.RaddrB    (Instruction[1:0]), 
 		.RaddrC	   (Instruction[5:4]),
@@ -96,7 +97,6 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
     ALU ALU1  (
 	  .A  (InA),
 	  .B  (InB),
-      .imm (Instruction[1:0]),
 	  .OP      (Instruction[8:6]),
 	  .out     (ALU_out),//regWriteValue),
 	  .Zero	   (Zero   ),                     // status flag; may have others, if desired
@@ -104,10 +104,10 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
 	  );
   
 	DataMem DM1(
-		.DataAddress  (InA)    , 
-		.offset       (InB),
+		.DataAddress  (ReadA)    , 
+		.Offset       (ReadB),
 		.WriteEn      (MemWrite), 
-		.DataIn       (InC), 
+		.DataIn       (ReadC), 
 		.DataOut      (MemReadValue)  , 
 		.Clk 		  (Clk)	     ,
 		.Reset		  (Reset)
