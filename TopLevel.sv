@@ -90,7 +90,8 @@ LUT LUT1(.Addr         (TargSel ) ,
 	assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
     ALU ALU1  (
 	  .A  (InA),
-	  .B  (InB), 
+	  .B  (InB),
+          .imm (Instruction[1:0]),
 	  //.SC_in   (1'b1),
 	  .OP      (Instruction[8:6]),
 	  .out     (ALU_out),//regWriteValue),
