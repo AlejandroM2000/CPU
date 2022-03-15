@@ -72,9 +72,9 @@ LUT LUT1(.Addr         (TargSel ) ,
 		.Clk       (Clk)			  ,
 		.Reset     (Reset),
 		.WriteEn   (RegWrEn)    , 
-		.RaddrA    (Instruction[5:3]),        //concatenate with 0 to give us 4 bits
-		.RaddrB    (Instruction[2:0]), 
-		.Waddr     (Instruction[5:3]), 	      // mux above
+		.RaddrA    (Instruction[3:2]),        //concatenate with 0 to give us 4 bits
+		.RaddrB    (Instruction[1:0]), 
+		.Waddr     (Instruction[5:4]), 	      // mux above
 		.DataIn    (RegWriteValue) , 
 		.DataOutA  (ReadA        ) , 
 		.DataOutB  (ReadB		 )
@@ -90,7 +90,8 @@ LUT LUT1(.Addr         (TargSel ) ,
 	assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
     ALU ALU1  (
 	  .A  (InA),
-	  .B  (InB), 
+	  .B  (InB),
+          .imm (Instruction[1:0]),
 	  //.SC_in   (1'b1),
 	  .OP      (Instruction[8:6]),
 	  .out     (ALU_out),//regWriteValue),
@@ -100,6 +101,7 @@ LUT LUT1(.Addr         (TargSel ) ,
   
 	DataMem DM1(
 		.DataAddress  (ReadB)    , 
+		.offset       (Instruction[1:0]),
 		.WriteEn      (MemWrite), 
 		.DataIn       (ReadA), 
 		.DataOut      (MemReadValue)  , 

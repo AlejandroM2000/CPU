@@ -1,6 +1,7 @@
 module ALU #(parameter W=8, Ops=3) (
     input logic      [W-1:0]A,
                             B,
+	input logic  [1:0]imm,
     input logic     [Ops-1:0] OP,
     output logic    [W-1:0] out,
     output logic            Zero,
