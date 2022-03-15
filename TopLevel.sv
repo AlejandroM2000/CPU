@@ -101,6 +101,7 @@ LUT LUT1(.Addr         (TargSel ) ,
   
 	DataMem DM1(
 		.DataAddress  (ReadB)    , 
+		.offset       (Instruction[1:0]),
 		.WriteEn      (MemWrite), 
 		.DataIn       (ReadA), 
 		.DataOut      (MemReadValue)  , 
