@@ -1,0 +1,71 @@
+MOV r1 4
+SHIFTLEFT r1 4
+MOV r1 1
+MOV r3 0
+LOAD r2 r1 r3
+MOV r3 4
+SHIFTLEFT r3 4
+MOV r3 0
+MOV r4 0
+LOAD r1 r3 r4
+XORR r3 r2 0
+XORR r3 r2 1
+MOV r4 0
+MOV r1 15
+BOE r3 r4 r1
+XORR r3 r2 0
+SHIFTRIGHT r4 8
+SHIFTLEFT r2 4
+SHIFTRIGHT r4 4
+ADD r4 r2 r4
+XORR r3 r4 1
+MOV r4 4
+SHIFTLEFT r4 4
+MOV r4 1
+LOAD r2 r4 r3
+SHIFTRIGHT r1 1
+SHIFTLEFT r1 0
+SHIFTRIGHT r4 0
+ADD r4 r1 r4
+LOAD r2 r4 r1
+SHIFTRIGHT r1 3
+SHIFTLEFT r1 4
+ADD r4 r4 r1
+SHIFTLEFT r2 4
+SHIFTRIGHT r1 6           
+SHIFTLEFT r1 2           
+ADD r4 r4 r2         
+SHIFTLEFT r2 6          
+SHIFTRIGHT r2 3         
+ADD r4 r4 r2   
+XORR r3 r4 1    
+LOAD r2 r1 r3              
+SHIFTLEFT r1 7          
+SHIFTLEFT r4 5        
+SHIFTRIGHT r4 3           
+SHIFTLEFT r4 5         
+ADD r1 r1 r4         
+SHIFTLEFT r4 4          
+SHIFTRIGHT r4 5      
+SHIFTLEFT r4 3
+ADD r1 r1 r2        
+SHIFTLEFT r4 6          
+SHIFTRIGHT r3 5         
+LOAD r2 r1 r3            
+SHIFTRIGHT r4 6         
+ADD r1 r1 r4      
+SHIFTLEFT r4 2       
+SHIFTRIGHT r4 6    
+SHIFTLEFT r4 3
+ADD r1 r1 r4    
+SHIFTLEFT r4 6      
+SHIFTRIGHT r4 3  
+ADD r1 r1 r4  
+SHIFTLEFT r4 6
+SHIFTRIGHT r4 7
+ADD r1 r1 r4
+XORR r3 r1 0
+MOV r1 1
+STORE r4 r2 r1
+MOV r1 0
+STORE r3 r2 r1
