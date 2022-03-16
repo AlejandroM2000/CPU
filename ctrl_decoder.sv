@@ -29,4 +29,3 @@ assign BOE = Instruction[8:6] == 3'b110;
 assign Ack = &Instruction;
 
 endmodule
-
