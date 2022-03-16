@@ -41,7 +41,7 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
     .IsEqual      (isEqual ) ,
 	//.BranchRel    (BranchEn) ,  // branch enable
 	//.ALU_flag	  (Zero    ) ,  // 
-	.Target       (PCTarg  ) ,  // "where to?" or "how far?" during a jump or branch
+	.Target       (InB  ) ,  // "where to?" or "how far?" during a jump or branch
 	.ProgCtr      (PgmCtr  )	   // program count = index to instruction memory
 	);					  
 

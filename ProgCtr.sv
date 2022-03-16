@@ -1,14 +1,14 @@
 // Description: Program Counter (Instruction Fetch) for Processor
 // Tested using ProgCtr_tb
 
-module ProgCtr #(parameter L = 10) (
+module ProgCtr #(parameter L = 10, W = 8) (
     input                   Reset,             // Reset flag
                             Start,             // Signal to jump to next program
                             Clk,               // Clock that drives PC
                             //Jump,              // Signal to unconditionally jump
                             BOE,               // Signal to conditionally jump
                             IsEqual,           // Signal from ALU
-    input [L-1:0]           Target,            // Address to jump to
+    input [W-1:0]           Target,            // Address to jump to
     output logic [L-1:0]    ProgCtr            // Register that holds the Program Counter
 );
 

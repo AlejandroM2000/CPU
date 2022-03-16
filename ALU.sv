@@ -17,7 +17,7 @@ module ALU #(parameter W=8, Ops=2) (
             //         outA < B
             //         out[B] = ^A;
             // end; //shift left
-            2'b11: begin
+            2'b11: begin  // Incorrect check for opcode XORR
                 out = A;
                 out[B] = ^A;
             end
@@ -25,7 +25,7 @@ module ALU #(parameter W=8, Ops=2) (
     end
             
 
-    assign Zero = !out;
-    assign Sign = out[0];
-    assign isEqual = (A == C);
+    //assign Zero = !out;
+    //assign Sign = out[0];
+    assign isEqual = (OP == 2'b10) && (A == C);
 endmodule
