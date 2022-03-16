@@ -19,10 +19,14 @@ module data_mem #(parameter W=8, A=8)  (
 */
     if(Reset) begin
 // you may initialize your memory w/ constants, if you wish
-      for(int i=0;i<256;i++)
-	      Core[i] <= i;
+      // for(int i=0;i<256;i++)
+	    //   Core[i] <= i;
+      $readmemh("data_mem_01-initial.hex", Core);
 	end
     else if(WriteEn) 
       Core[DataAddress + Offset] <= DataIn;
+  
+    //$readmemh("data_mem_01-golden-P2_11.hex", Core);
+
 
 endmodule

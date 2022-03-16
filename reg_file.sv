@@ -34,7 +34,7 @@ always_ff @ (posedge Clk) begin
   //end
 end
 
-assign      DataOutA = Registers[RaddrA];
+assign      DataOutA = Shift ? Registers[RaddrC]: Registers[RaddrA];
 
 always_comb DataOutB = Shift ? {RaddrA, RaddrB} : Registers[RaddrB];    // can read from addr 0, just like ARM
 

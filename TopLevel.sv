@@ -100,7 +100,7 @@ assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg
     ALU ALU1  (
 	  .A  (InA),
 	  .B  (InB),
-	  .OP      (Instruction[8:6]),
+	  .OP      (Instruction[7:6]),
 	  .out     (ALU_out)//regWriteValue),
 	//   .Zero	   (Zero   ),                     // status flag; may have others, if desired
     //   .Sign    (Sign   )

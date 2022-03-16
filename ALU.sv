@@ -1,4 +1,4 @@
-module ALU #(parameter W=8, Ops=3) (
+module ALU #(parameter W=8, Ops=2) (
     input logic      [W-1:0]A,
                             B,
     input logic     [Ops-1:0] OP,
@@ -8,18 +8,17 @@ module ALU #(parameter W=8, Ops=3) (
     
     always_comb begin
         case(OP)
-            3'b000: out = A + B; // add 
-            3'b001: out = A >> B; //shift right
-            3'b010: out = A << B; // shift left
+            2'b00: out = A + B; // add 
+            2'b01: out = A >> B; //shift right
+            2'b10: out = A << B; // shift left
             // 3'b010: begin
             //         outA < B
             //         out[B] = ^A;
             // end; //shift left
-            3'b011: begin
+            2'b11: begin
                 out = A;
                 out[B] = ^A;
             end
-		    default: out = 0;
         endcase
     end
             
