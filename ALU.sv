@@ -1,8 +1,10 @@
 module ALU #(parameter W=8, Ops=2) (
     input logic      [W-1:0]A,
                             B,
+                            C,
     input logic     [Ops-1:0] OP,
-    output logic    [W-1:0] out    
+    output logic    [W-1:0] out, 
+    output logic            isEqual   
 );
 
     
@@ -25,4 +27,5 @@ module ALU #(parameter W=8, Ops=2) (
 
     assign Zero = !out;
     assign Sign = out[0];
+    assign isEqual = (A == C);
 endmodule

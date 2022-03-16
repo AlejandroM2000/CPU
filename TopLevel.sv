@@ -59,7 +59,7 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
 // Control decoder
   Ctrl Ctrl1 (
 	.Instruction  (Instruction) ,  // from instr_ROM
-	.BranchEn     (BranchEn   )	,  // to PC
+	.BOE	      (BOE   )	,  // to PC
 	.RegWrEn      (RegWrEn    )	,  // register file write enable
 	.Shift		  (Shift	  ) ,
 	.MovEn		  (MovEn      ) ,
@@ -70,7 +70,7 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
     .Ack          (Ack        )	   // "done" flag
   );
 
-assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
+assign RegWriteValue = LoadInst ? MemReadValue : ALU_out;  // 2:1 switch into reg_file
 // reg file
 	RegFile #(.W(8),.A(2)) RF1 (			  // A(3) makes this 2**3=8 elements deep
 		.Clk       (Clk)			  ,
@@ -100,8 +100,11 @@ assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg
     ALU ALU1  (
 	  .A  (InA),
 	  .B  (InB),
+	  .C  (InC),
 	  .OP      (Instruction[7:6]),
-	  .out     (ALU_out)//regWriteValue),
+	  .out     (ALU_out),
+	  .isEqual (isEqual)
+	  //regWriteValue),
 	//   .Zero	   (Zero   ),                     // status flag; may have others, if desired
     //   .Sign    (Sign   )
 	  );
