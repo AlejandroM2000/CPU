@@ -10,7 +10,7 @@ module TopLevel(		   // you will have the same 3 ports
 wire [ 9:0] PgmCtr,        // program counter
 			PCTarg;
 wire [ 8:0] Instruction;   // our 9-bit opcode
-wire [ 7:0] ReadA,  ReadB,//  ReadC;  // reg_file outputs
+wire [ 7:0] ReadA,  ReadB,  ReadC;  // reg_file outputs
 wire [ 7:0] InA, InB, InC,	   // ALU operand inputs
             ALU_out;       // ALU result
 wire [ 7:0] RegWriteValue, // data in to reg file
@@ -18,15 +18,16 @@ wire [ 7:0] RegWriteValue, // data in to reg file
 	        MemReadValue;  // data out from data_memory
 wire        MemWrite,	   // data_memory write enable
 	        RegWrEn,	   // reg_file write enable
-	        Zero,          // ALU output = 0 flag
-            Sign,          // ALU output, 1 = negative **Added
+	        // Zero,          // ALU output = 0 flag
+            // Sign,          // ALU output, 1 = negative **Added
             Jump,	       // to program counter: jump 
             BOE,           // **Added 
             isEqual,	   // to program counter: branch enable **changed
+			Shift, 
 			MovEn, 
             BranchEn,
-            LoadInst,
-            StoreInst;
+            LoadInst;
+            //StoreInst;
 wire [1:0]  TargSel;
 logic[15:0] CycleCt;	   // standalone; NOT PC!
 
@@ -58,23 +59,25 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
 // Control decoder
   Ctrl Ctrl1 (
 	.Instruction  (Instruction) ,  // from instr_ROM
-	.Jump         (Jump       ) ,  // to PC to handle jump/branch instructions
 	.BranchEn     (BranchEn   )	,  // to PC
 	.RegWrEn      (RegWrEn    )	,  // register file write enable
+	.Shift		  (Shift	  ) ,
 	.MovEn		  (MovEn      ) ,
 	.MemWrEn      (MemWrite   ) ,  // data memory write enable
     .LoadInst     (LoadInst   ) ,  // selects memory vs ALU output as data input to reg_file
-    .StoreInst    (StoreInst  ) ,
-    .TargSel      (TargSel    ) ,  // index into lookup table 
+    //.StoreInst    (StoreInst  ) ,
+    //.TargSel      (TargSel    ) ,  // index into lookup table 
     .Ack          (Ack        )	   // "done" flag
   );
 
+assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
 // reg file
 	RegFile #(.W(8),.A(2)) RF1 (			  // A(3) makes this 2**3=8 elements deep
 		.Clk       (Clk)			  ,
 		.Reset     (Reset),
 		.WriteEn   (RegWrEn)    , 
 		.MovEn	   (MovEn),
+		.Shift		(Shift),
 		.RaddrA    (Instruction[3:2]),        //concatenate with 0 to give us 4 bits
 		.RaddrB    (Instruction[1:0]), 
 		.RaddrC	   (Instruction[5:4]),
@@ -93,17 +96,17 @@ logic[15:0] CycleCt;	   // standalone; NOT PC!
 	assign InB = ReadB;	          			  // interject switch/mux if needed/desired
 	assign InC = ReadC;
 // controlled by Ctrl1 -- must be high for load from data_mem; otherwise usually low
-	assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
+//	assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
     ALU ALU1  (
 	  .A  (InA),
 	  .B  (InB),
 	  .OP      (Instruction[8:6]),
-	  .out     (ALU_out),//regWriteValue),
-	  .Zero	   (Zero   ),                     // status flag; may have others, if desired
-      .Sign    (Sign   )
+	  .out     (ALU_out)//regWriteValue),
+	//   .Zero	   (Zero   ),                     // status flag; may have others, if desired
+    //   .Sign    (Sign   )
 	  );
   
-	DataMem DM1(
+	data_mem DM1(
 		.DataAddress  (ReadA)    , 
 		.Offset       (ReadB),
 		.WriteEn      (MemWrite), 

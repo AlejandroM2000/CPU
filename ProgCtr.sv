@@ -40,7 +40,7 @@ always_ff @(posedge Clk) begin
 	end else if (Start == 1) begin
 		ProgCtr <= 0;
 	end else if ( (last_start == '1) && (Start == '0)) begin
-		ProgCtr <= 'd90;           // Set to 90 for now, test when second instruction is added
+		ProgCtr <= 'd1;           // Set to 90 for now, test when second instruction is added
 	end
 end
 
