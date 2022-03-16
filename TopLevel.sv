@@ -101,7 +101,7 @@ assign RegWriteValue = LoadInst ? MemReadValue : ALU_out;  // 2:1 switch into re
 	  .A  (InA),
 	  .B  (InB),
 	  .C  (InC),
-	  .OP      (Instruction[7:6]),
+	  .OP      (Instruction[8:6]),
 	  .out     (ALU_out),
 	  .isEqual (isEqual)
 	  //regWriteValue),

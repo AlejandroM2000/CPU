@@ -1,4 +1,4 @@
-module ALU #(parameter W=8, Ops=2) (
+module ALU #(parameter W=8, Ops=3) (
     input logic      [W-1:0]A,
                             B,
                             C,
@@ -9,7 +9,7 @@ module ALU #(parameter W=8, Ops=2) (
 
     
     always_comb begin
-        case(OP)
+        case(OP[1:0])
             2'b00: out = A + B; // add 
             2'b01: out = A >> B; //shift right
             2'b10: out = A << B; // shift left
@@ -17,7 +17,7 @@ module ALU #(parameter W=8, Ops=2) (
             //         outA < B
             //         out[B] = ^A;
             // end; //shift left
-            2'b11: begin  // Incorrect check for opcode XORR
+            2'b11: begin  
                 out = A;
                 out[B] = ^A;
             end
@@ -27,5 +27,5 @@ module ALU #(parameter W=8, Ops=2) (
 
     //assign Zero = !out;
     //assign Sign = out[0];
-    assign isEqual = (OP == 2'b10) && (A == C);
+    assign isEqual = (OP == 3'b110) && (A == C);
 endmodule

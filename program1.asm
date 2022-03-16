@@ -11,7 +11,6 @@ MOV r4 1
 ADD r2 r1 r4  //r2 = odd number (13579...)
 LOAD r3 r1 r2 
 LOAD r4 r1 0   //(r4 = 01010101)
-//p8 parity bit
 SHIFTLEFT r3 5
 SHIFTRIGHT r4 3 
 ADD r3 r4 r3 //b11:b5 are the top of the word
@@ -25,8 +24,6 @@ MOV r2 1
 SHIFTLEFT r2 4
 MOV r2 15
 STORE r3 r1 r2 //STOREs it in the corresponding location
-//r3 = b11 b10 b9 b8 b7 b6 b5 p8
-//r4 = 0 0 0 b8 b7 b6 b5 b4
 SHIFTRIGHT r3 4 //r3 = 0 0 0 0 b11 b10 b9 b8 start of p4
 MOV r4 0
 SHIFTLEFT r4 4
@@ -137,19 +134,20 @@ MOV r2 14
 LOAD r3 r1 r2 //Loads the LSWo form memory
 ADD r3 r4 r3 //r3 = b4 b3 b2 p4 b2 p2 b1 p16
 STORE r3 r1 r2 //stores the complete LSWo into memory
-MOV r3 2
+MOV r3 1
 SHIFTLEFT r3 4
-MOV r3 0 // r3 == 32
+MOV r3 14 // r3 == 32 exit condition to check against
 MOV r4 0
 SHIFTLEFT r4 4
 MOV r4 2
 ADD r1 r1 r4
 MOV r2 9
 SHIFTLEFT r2 4
-MOV r2 11
-BOE r1 r3 r2 //r1 = even number (02468...) //exit condition
+MOV r2 8
+//BOE r3 r3 r2 //r1 = even number (02468...) //exit condition
 MOV r2 0
 SHIFTLEFT r2 4
-MOV r2 8 //branch condition
-BOE r1 r1 r2
+MOV r2 8 
+//BOE r1 r1 r2 //branch condition
 halt
+
