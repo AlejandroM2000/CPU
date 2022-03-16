@@ -4,8 +4,10 @@
     MOV r3 1
     SHIFTLEFT r3 4
     MOV r3 15
-    BOE r1 r3 r2 //r1 = even number (02468...)
+    MOV r1 0 
+    BOE r1 r3 r2 //r1 = even number (02468...) //exit condition
     MOV r2 0
+    SHIFTLEFT r2 4
     LOAD r3 r1 r2 
     ADD r2 r1 1  //r2 = odd number (13579...)
     LOAD r4 r2 0   //(r4 = 01010101)
